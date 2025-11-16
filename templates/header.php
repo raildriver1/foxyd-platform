@@ -35,6 +35,11 @@
             --shadow-hover: rgba(0, 0, 0, 0.4);
             --navbar-bg: rgba(23, 26, 32, 0.8);
             --navbar-bg-scrolled: rgba(23, 26, 32, 0.95);
+            --medium-gray: rgba(255, 255, 255, 0.6);
+            --dark-gray: rgba(255, 255, 255, 0.9);
+            --dark: #171a20;
+            --bg-dark: #0a0b0d;
+            --white: #ffffff;
         }
         
         /* Светлая тема */
@@ -46,7 +51,7 @@
             --text-primary: #171a20;
             --text-secondary: rgba(23, 26, 32, 0.7);
             --text-tertiary: rgba(23, 26, 32, 0.5);
-            --border-color: rgba(23, 26, 32, 0.1);
+            --border-color: rgba(23, 26, 32, 0.15);
             --card-bg-start: #ffffff;
             --card-bg-end: #f8f9fa;
             --input-bg: #f5f7fa;
@@ -54,6 +59,11 @@
             --shadow-hover: rgba(23, 26, 32, 0.15);
             --navbar-bg: rgba(255, 255, 255, 0.8);
             --navbar-bg-scrolled: rgba(255, 255, 255, 0.95);
+            --medium-gray: rgba(23, 26, 32, 0.6);
+            --dark-gray: rgba(23, 26, 32, 0.9);
+            --dark: #171a20;
+            --bg-dark: #0a0b0d;
+            --white: #ffffff;
         }
         
         body {
@@ -214,37 +224,52 @@
         
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-orange) 0%, var(--secondary-orange) 100%);
-            color: white;
+            color: white !important;
             box-shadow: 0 4px 20px rgba(255, 107, 53, 0.4);
         }
         
         .btn-primary:hover {
+            color: white !important;
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 8px 30px rgba(255, 107, 53, 0.6);
         }
         
         .btn-secondary {
             background: transparent;
-            color: var(--primary-orange);
+            color: var(--primary-orange) !important;
             border: 2px solid var(--primary-orange);
         }
         
         .btn-secondary:hover {
             background: var(--primary-orange);
-            color: white;
+            color: white !important;
             transform: translateY(-3px) scale(1.02);
             box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
         }
         
         .btn-ghost {
             background: var(--input-bg);
-            color: var(--text-primary);
+            color: var(--text-primary) !important;
             border: 1px solid var(--border-color);
         }
         
         .btn-ghost:hover {
             background: var(--bg-tertiary);
+            color: var(--text-primary) !important;
             transform: translateY(-2px);
+        }
+        
+        /* Улучшенная видимость btn-ghost в светлой теме */
+        [data-theme="light"] .btn-ghost {
+            background: #ffffff;
+            border: 1.5px solid rgba(23, 26, 32, 0.25);
+            box-shadow: 0 1px 3px rgba(23, 26, 32, 0.05);
+        }
+        
+        [data-theme="light"] .btn-ghost:hover {
+            background: #f5f7fa;
+            border-color: rgba(23, 26, 32, 0.35);
+            box-shadow: 0 2px 8px rgba(23, 26, 32, 0.1);
         }
         
         /* === КОНТЕЙНЕРЫ === */
@@ -284,10 +309,23 @@
             backdrop-filter: blur(10px);
         }
         
+        /* Более видимые границы для светлой темы */
+        [data-theme="light"] .card {
+            border: 1px solid rgba(23, 26, 32, 0.12);
+            box-shadow: 0 4px 20px rgba(23, 26, 32, 0.08),
+                        0 1px 3px rgba(23, 26, 32, 0.06);
+        }
+        
         .card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 50px var(--shadow-hover);
             border-color: rgba(255, 107, 53, 0.25);
+        }
+        
+        [data-theme="light"] .card:hover {
+            box-shadow: 0 8px 30px rgba(23, 26, 32, 0.12),
+                        0 2px 8px rgba(23, 26, 32, 0.08);
+            border-color: rgba(255, 107, 53, 0.3);
         }
         
         .card-header {
@@ -373,6 +411,21 @@
             transform: translateY(-2px);
         }
         
+        /* Улучшенная видимость элементов формы в светлой теме */
+        [data-theme="light"] .form-control,
+        [data-theme="light"] select,
+        [data-theme="light"] textarea {
+            border: 1.5px solid rgba(23, 26, 32, 0.25);
+            background: #ffffff;
+            box-shadow: 0 1px 3px rgba(23, 26, 32, 0.05);
+        }
+        
+        [data-theme="light"] .form-control:hover,
+        [data-theme="light"] select:hover,
+        [data-theme="light"] textarea:hover {
+            border-color: rgba(23, 26, 32, 0.35);
+        }
+        
         select {
             cursor: pointer;
             appearance: none;
@@ -407,6 +460,24 @@
             background: rgba(76, 217, 100, 0.2);
             color: #4cd964;
             border: 1px solid rgba(76, 217, 100, 0.3);
+        }
+        
+        .badge-gray {
+            background: var(--input-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+        
+        .badge-success {
+            background: rgba(76, 217, 100, 0.2);
+            color: #4cd964;
+            border: 1px solid rgba(76, 217, 100, 0.3);
+        }
+        
+        .badge-info {
+            background: rgba(52, 199, 89, 0.2);
+            color: #34c759;
+            border: 1px solid rgba(52, 199, 89, 0.3);
         }
         
         /* === СКЕЛЕТОН ЛОАДЕР === */

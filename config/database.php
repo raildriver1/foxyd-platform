@@ -47,9 +47,17 @@ class Database {
                 phone TEXT,
                 role TEXT DEFAULT 'student',
                 avatar TEXT,
+                verified INTEGER DEFAULT 1,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             )
         ");
+        
+        // Добавляем поле verified если его нет (для существующих БД)
+        try {
+            $this->connection->exec("ALTER TABLE users ADD COLUMN verified INTEGER DEFAULT 1");
+        } catch (PDOException $e) {
+            // Поле уже существует, игнорируем
+        }
         
         // Таблица репетиторов (дополнительная информация)
         $this->connection->exec("

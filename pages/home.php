@@ -126,18 +126,18 @@ include __DIR__ . '/../templates/header.php';
     </div>
 </div>
 
-<!-- Наши инструкторы -->
+<!-- Наши репетиторы -->
 <div class="instructors-section">
     <div class="section-header">
-        <h2 class="section-title">Наши инструкторы</h2>
+        <h2 class="section-title">Наши репетиторы</h2>
     </div>
     
     <?php
-    // Получаем инструкторов
+    // Получаем репетиторов
     $stmt = $conn->query("
         SELECT id, name, email 
         FROM users 
-        WHERE role = 'instructor'
+        WHERE role = 'tutor'
         ORDER BY name
         LIMIT 3
     ");
@@ -249,6 +249,10 @@ include __DIR__ . '/../templates/header.php';
         margin-bottom: 2.5rem;
     }
     
+    [data-theme="light"] .hero-description {
+        color: rgba(23, 26, 32, 0.7);
+    }
+    
     .hero-buttons {
         display: flex;
         gap: 1.5rem;
@@ -267,16 +271,16 @@ include __DIR__ . '/../templates/header.php';
     
     .floating-card {
         position: absolute;
-        background: rgba(255, 255, 255, 0.05);
+        background: var(--bg-secondary);
         backdrop-filter: blur(20px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid var(--border-color);
         border-radius: 20px;
         padding: 1.5rem 2rem;
         display: flex;
         align-items: center;
         gap: 1rem;
         animation: float 6s ease-in-out infinite;
-        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 10px 40px var(--shadow);
     }
     
     .floating-card-1 { top: 10%; left: 10%; animation-delay: 0s; }
@@ -302,13 +306,18 @@ include __DIR__ . '/../templates/header.php';
     .card-title { font-weight: 700; font-size: 1.1rem; }
     .card-subtitle { font-size: 0.9rem; color: rgba(255, 255, 255, 0.6); }
     
+    [data-theme="light"] .card-subtitle {
+        color: rgba(23, 26, 32, 0.6);
+    }
+    
     /* === СТАТИСТИКА === */
     .stats-section {
-        background: linear-gradient(135deg, var(--dark-gray), var(--medium-gray));
+        background: var(--bg-secondary);
         padding: 4rem 3rem;
         border-radius: 25px;
         margin: 4rem 0;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
+        box-shadow: 0 4px 20px var(--shadow);
     }
     
     .stats-grid {
@@ -331,6 +340,10 @@ include __DIR__ . '/../templates/header.php';
     .stat-label {
         font-size: 1.1rem;
         color: rgba(255, 255, 255, 0.7);
+    }
+    
+    [data-theme="light"] .stat-label {
+        color: rgba(23, 26, 32, 0.7);
     }
     
     /* === КУРСЫ === */
@@ -368,19 +381,20 @@ include __DIR__ . '/../templates/header.php';
     }
     
     .course-card {
-        background: linear-gradient(135deg, var(--dark-gray), rgba(35, 38, 47, 0.8));
+        background: var(--bg-secondary);
         border-radius: 20px;
         padding: 2rem;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
         transition: all 0.4s;
         display: flex;
         flex-direction: column;
+        box-shadow: 0 4px 20px var(--shadow);
     }
     
     .course-card:hover {
         transform: translateY(-10px);
         border-color: rgba(255, 107, 53, 0.3);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 20px 60px var(--shadow-hover);
     }
     
     .course-header {
@@ -416,6 +430,10 @@ include __DIR__ . '/../templates/header.php';
         flex-grow: 1;
     }
     
+    [data-theme="light"] .course-description {
+        color: rgba(23, 26, 32, 0.6);
+    }
+    
     .course-meta {
         display: flex;
         gap: 1.5rem;
@@ -424,9 +442,17 @@ include __DIR__ . '/../templates/header.php';
         border-top: 1px solid rgba(255, 255, 255, 0.05);
     }
     
+    [data-theme="light"] .course-meta {
+        border-top: 1px solid rgba(23, 26, 32, 0.12);
+    }
+    
     .meta-item {
         color: rgba(255, 255, 255, 0.6);
         font-size: 0.9rem;
+    }
+    
+    [data-theme="light"] .meta-item {
+        color: rgba(23, 26, 32, 0.6);
     }
     
     .course-footer {
@@ -459,18 +485,19 @@ include __DIR__ . '/../templates/header.php';
     }
     
     .instructor-card {
-        background: linear-gradient(135deg, var(--dark-gray), rgba(35, 38, 47, 0.8));
+        background: var(--bg-secondary);
         padding: 3rem 2rem;
         border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
         transition: all 0.4s;
         text-align: center;
+        box-shadow: 0 4px 20px var(--shadow);
     }
     
     .instructor-card:hover {
         transform: translateY(-10px);
         border-color: rgba(255, 107, 53, 0.3);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 20px 60px var(--shadow-hover);
     }
     
     .instructor-avatar {
@@ -498,6 +525,10 @@ include __DIR__ . '/../templates/header.php';
         margin-bottom: 1.5rem;
     }
     
+    [data-theme="light"] .instructor-email {
+        color: rgba(23, 26, 32, 0.6);
+    }
+    
     .features-section {
         margin: 6rem 0;
         text-align: center;
@@ -514,17 +545,18 @@ include __DIR__ . '/../templates/header.php';
     }
     
     .feature-card {
-        background: linear-gradient(135deg, var(--dark-gray), rgba(35, 38, 47, 0.8));
+        background: var(--bg-secondary);
         padding: 3rem 2rem;
         border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
         transition: all 0.4s;
+        box-shadow: 0 4px 20px var(--shadow);
     }
     
     .feature-card:hover {
         transform: translateY(-10px);
         border-color: rgba(255, 107, 53, 0.3);
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        box-shadow: 0 20px 60px var(--shadow-hover);
     }
     
     .feature-icon {
@@ -540,6 +572,10 @@ include __DIR__ . '/../templates/header.php';
     
     .feature-card p {
         color: rgba(255, 255, 255, 0.6);
+    }
+    
+    [data-theme="light"] .feature-card p {
+        color: rgba(23, 26, 32, 0.6);
     }
     
     /* === АДАПТИВНОСТЬ === */

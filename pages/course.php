@@ -91,7 +91,7 @@ include 'templates/header.php';
                 <div>
                     <?php foreach ($lessons as $lesson): ?>
                         <?php $completed = isLoggedIn() && isLessonCompleted(getCurrentUserId(), $lesson['id']); ?>
-                        <div style="padding: 1.5rem; border: 2px solid <?= $completed ? 'var(--primary-orange)' : 'rgba(0, 0, 0, 0.08)' ?>; border-radius: 12px; margin-bottom: 1rem; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--primary-orange)'" onmouseout="this.style.borderColor='<?= $completed ? 'var(--primary-orange)' : 'rgba(0, 0, 0, 0.08)' ?>'">
+                        <div style="padding: 1.5rem; border: 2px solid <?= $completed ? 'var(--primary-orange)' : 'var(--border-color)' ?>; border-radius: 12px; margin-bottom: 1rem; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--primary-orange)'" onmouseout="this.style.borderColor='<?= $completed ? 'var(--primary-orange)' : 'var(--border-color)' ?>'">
                             <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 0.5rem;">
                                 <h3 style="font-weight: 700; font-size: 1.1rem; flex: 1;">
                                     <?php if ($completed): ?>

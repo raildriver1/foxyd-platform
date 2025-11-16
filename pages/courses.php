@@ -18,7 +18,7 @@ include 'templates/header.php';
     <div class="grid">
         <?php foreach ($courses as $course): ?>
             <div class="card" style="height: 100%; display: flex; flex-direction: column;">
-                <div style="padding: 1.5rem; background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 140, 66, 0.05)); border-radius: 12px 12px 0 0; margin: -2.5rem -2.5rem 1.5rem;">
+                <div style="padding: 1.5rem; background: transparent; margin: -2.5rem -2.5rem 1.5rem;">
                     <div class="badge badge-orange" style="margin-bottom: 1rem;"><?= e($course['category']) ?></div>
                     <h3 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.8rem;"><?= e($course['title']) ?></h3>
                     <p style="color: var(--medium-gray); line-height: 1.6;"><?= e($course['short_description']) ?></p>

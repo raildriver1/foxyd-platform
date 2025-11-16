@@ -11,11 +11,11 @@ if (!isLoggedIn()) {
 
 $user = getCurrentUser();
 
-// Получаем список инструкторов
+// Получаем список репетиторов
 $stmt = $conn->query("
     SELECT id, name, email 
     FROM users 
-    WHERE role = 'instructor'
+    WHERE role = 'tutor'
     ORDER BY name
 ");
 $instructors = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -309,14 +309,15 @@ include __DIR__ . '/../templates/header.php';
         background: rgba(255, 255, 255, 0.7) !important;
         backdrop-filter: blur(20px) saturate(180%);
         -webkit-backdrop-filter: blur(20px) saturate(180%);
-        border: 1px solid rgba(255, 255, 255, 0.5);
+        border: 1px solid rgba(23, 26, 32, 0.12) !important;
         box-shadow: 0 8px 32px rgba(23, 26, 32, 0.1),
+                    0 2px 8px rgba(23, 26, 32, 0.06),
                     inset 0 1px 0 rgba(255, 255, 255, 0.8);
     }
     
     .glass-card:hover {
         background: rgba(255, 255, 255, 0.05) !important;
-        border-color: rgba(255, 107, 53, 0.3);
+        border-color: rgba(255, 107, 53, 0.3) !important;
         box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3),
                     inset 0 1px 0 rgba(255, 255, 255, 0.15),
                     0 0 0 1px rgba(255, 107, 53, 0.2);
@@ -324,9 +325,11 @@ include __DIR__ . '/../templates/header.php';
     
     [data-theme="light"] .glass-card:hover {
         background: rgba(255, 255, 255, 0.85) !important;
+        border-color: rgba(255, 107, 53, 0.35) !important;
         box-shadow: 0 12px 40px rgba(23, 26, 32, 0.15),
+                    0 4px 12px rgba(23, 26, 32, 0.08),
                     inset 0 1px 0 rgba(255, 255, 255, 0.9),
-                    0 0 0 1px rgba(255, 107, 53, 0.2);
+                    0 0 0 1px rgba(255, 107, 53, 0.25);
     }
     
     /* === ПЛАВНЫЕ ПЕРЕХОДЫ СТРАНИЦ === */

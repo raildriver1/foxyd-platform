@@ -17,6 +17,20 @@ if (!$user) {
     redirect('/login');
 }
 
+// Для репетиторов получаем заявки от школьников
+$appointments = [];
+if ($user['role'] === 'tutor') {
+    $stmt = $conn->prepare("
+        SELECT a.*, u.name as student_name, u.email as student_email 
+        FROM appointments a
+        LEFT JOIN users u ON a.student_id = u.id
+        WHERE a.instructor_id = ?
+        ORDER BY a.appointment_date DESC, a.created_at DESC
+    ");
+    $stmt->execute([$user['id']]);
+    $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+}
+
 // Получаем курсы пользователя
 $userCourses = getUserCourses($user['id']);
 
@@ -56,11 +70,11 @@ foreach ($skills as $skill => $value) {
 // Если нет навыков - добавляем демо данные для визуализации
 if (empty($skills)) {
     $skills = [
-        'Программирование' => 0,
-        'Дизайн' => 0,
-        'Веб-разработка' => 0,
-        'Мобильная разработка' => 0,
-        'Аналитика' => 0
+        'Алгебра' => 0,
+        'Геометрия' => 0,
+        'Математический анализ' => 0,
+        'Теория вероятностей' => 0,
+        'Статистика' => 0
     ];
 }
 
@@ -78,6 +92,28 @@ include __DIR__ . '/../templates/header.php';
             <h2 class="profile-name"><?= e($user['name']) ?></h2>
             <p class="profile-email"><?= e($user['email']) ?></p>
             
+            <!-- Роль пользователя -->
+            <div style="margin-bottom: 1.5rem;">
+                <?php
+                $roleLabels = [
+                    'admin' => '👑 Администратор',
+                    'tutor' => '👨‍🏫 Репетитор',
+                    'student' => '🎓 Школьник'
+                ];
+                $roleColors = [
+                    'admin' => 'linear-gradient(135deg, #ff6b35, #ff8c42)',
+                    'tutor' => 'linear-gradient(135deg, #5ac8fa, #007aff)',
+                    'student' => 'linear-gradient(135deg, #4cd964, #34c759)'
+                ];
+                $roleLabel = $roleLabels[$user['role']] ?? '🎓 Школьник';
+                $roleColor = $roleColors[$user['role']] ?? $roleColors['student'];
+                ?>
+                <div class="badge" style="background: <?= $roleColor ?>; color: white; padding: 0.5rem 1.2rem; font-size: 0.95rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                    <?= $roleLabel ?>
+                </div>
+            </div>
+            
+            <?php if ($user['role'] !== 'tutor' && $user['role'] !== 'admin'): ?>
             <!-- Уровень пользователя -->
             <div class="user-level">
                 <div class="level-header">
@@ -105,10 +141,12 @@ include __DIR__ . '/../templates/header.php';
                     <?php endif; ?>
                 </div>
             </div>
+            <?php endif; ?>
         </div>
     </div>
     
     <div class="profile-main">
+        <?php if ($user['role'] !== 'tutor' && $user['role'] !== 'admin'): ?>
         <!-- Радиальная диаграмма навыков -->
         <div class="card skills-card">
             <div class="card-header">
@@ -131,7 +169,74 @@ include __DIR__ . '/../templates/header.php';
                 <?php endforeach; ?>
             </div>
         </div>
+        <?php endif; ?>
         
+        <?php if ($user['role'] === 'tutor'): ?>
+        <!-- Заявки от школьников для репетиторов -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">📋 Заявки на занятия (<?= count($appointments) ?>)</h2>
+            </div>
+            
+            <?php if (empty($appointments)): ?>
+                <div class="empty-state">
+                    <div class="empty-icon">📅</div>
+                    <h3>У вас пока нет заявок</h3>
+                    <p>Школьники смогут записываться к вам через календарь</p>
+                </div>
+            <?php else: ?>
+                <div style="display: flex; flex-direction: column; gap: 1rem;">
+                    <?php foreach ($appointments as $appointment): ?>
+                        <?php
+                        $statusColors = [
+                            'pending' => ['bg' => 'rgba(255, 140, 66, 0.1)', 'text' => '#ff8c42', 'label' => '⏳ Ожидает'],
+                            'confirmed' => ['bg' => 'rgba(76, 217, 100, 0.1)', 'text' => '#4cd964', 'label' => '✓ Подтверждено'],
+                            'cancelled' => ['bg' => 'rgba(255, 59, 48, 0.1)', 'text' => '#ff3b30', 'label' => '✗ Отменено']
+                        ];
+                        $status = $statusColors[$appointment['status']] ?? $statusColors['pending'];
+                        ?>
+                        <div style="padding: 1.5rem; background: var(--input-bg); border-radius: 12px; border: 1px solid var(--border-color);">
+                            <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 1rem;">
+                                <div>
+                                    <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem;"><?= e($appointment['student_name']) ?></h3>
+                                    <div style="color: var(--text-secondary); font-size: 0.9rem;">
+                                        📧 <?= e($appointment['student_email']) ?>
+                                    </div>
+                                </div>
+                                <div style="padding: 0.4rem 1rem; background: <?= $status['bg'] ?>; color: <?= $status['text'] ?>; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                                    <?= $status['label'] ?>
+                                </div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem; margin-bottom: 1rem; padding: 1rem; background: var(--bg-tertiary); border-radius: 8px;">
+                                <div>
+                                    <div style="color: var(--text-tertiary); font-size: 0.85rem; margin-bottom: 0.3rem;">Дата и время</div>
+                                    <div style="font-weight: 600;">📅 <?= date('d.m.Y H:i', strtotime($appointment['appointment_date'])) ?></div>
+                                </div>
+                                <div>
+                                    <div style="color: var(--text-tertiary); font-size: 0.85rem; margin-bottom: 0.3rem;">Длительность</div>
+                                    <div style="font-weight: 600;">⏱️ <?= $appointment['duration'] ?> мин</div>
+                                </div>
+                            </div>
+                            
+                            <?php if ($appointment['notes']): ?>
+                                <div style="padding: 1rem; background: var(--bg-tertiary); border-radius: 8px; margin-bottom: 1rem;">
+                                    <div style="color: var(--text-tertiary); font-size: 0.85rem; margin-bottom: 0.5rem;">Примечания:</div>
+                                    <div style="white-space: pre-wrap;"><?= e($appointment['notes']) ?></div>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <div style="color: var(--text-tertiary); font-size: 0.85rem;">
+                                Создана: <?= date('d.m.Y H:i', strtotime($appointment['created_at'])) ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+            <?php endif; ?>
+        </div>
+        <?php endif; ?>
+        
+        <?php if ($user['role'] === 'student'): ?>
         <!-- Мои курсы -->
         <div class="card">
             <div class="card-header">
@@ -171,10 +276,12 @@ include __DIR__ . '/../templates/header.php';
                 </div>
             <?php endif; ?>
         </div>
+        <?php endif; ?>
     </div>
 </div>
 
 <!-- Chart.js для радиальной диаграммы -->
+<?php if ($user['role'] === 'student'): ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
 <script>
@@ -188,9 +295,29 @@ const data = Object.values(skillsData);
 // Проверка что есть canvas элемент
 const canvas = document.getElementById('skillsChart');
 if (canvas && labels.length > 0) {
-    const ctx = canvas.getContext('2d');
+    // Ждем немного чтобы тема успела установиться из localStorage
+    setTimeout(() => {
+        const ctx = canvas.getContext('2d');
+        
+        // Определяем текущую тему
+        const getCurrentTheme = () => document.documentElement.getAttribute('data-theme');
+        const isDark = () => getCurrentTheme() === 'dark';
+        
+        // Функция для получения цветов в зависимости от темы
+        const getThemeColors = () => {
+            const dark = isDark();
+            return {
+                gridColor: dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(23, 26, 32, 0.1)',
+                tickColor: dark ? 'rgba(255, 255, 255, 0.5)' : 'rgba(23, 26, 32, 0.5)',
+                labelColor: dark ? 'rgba(255, 255, 255, 0.9)' : 'rgba(23, 26, 32, 0.9)',
+                angleLineColor: dark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(23, 26, 32, 0.1)'
+            };
+        };
+        
+        // Важно: получаем цвета ПОСЛЕ того как тема установлена
+        let colors = getThemeColors();
     
-    new Chart(ctx, {
+    const chart = new Chart(ctx, {
         type: 'radar',
         data: {
             labels: labels,
@@ -246,7 +373,7 @@ if (canvas && labels.length > 0) {
                     max: 100,
                     ticks: {
                         stepSize: 20,
-                        color: 'rgba(255, 255, 255, 0.5)',
+                        color: colors.tickColor,
                         backdropColor: 'transparent',
                         font: {
                             size: 13
@@ -256,11 +383,11 @@ if (canvas && labels.length > 0) {
                         }
                     },
                     grid: {
-                        color: 'rgba(255, 255, 255, 0.1)',
+                        color: colors.gridColor,
                         circular: true
                     },
                     pointLabels: {
-                        color: 'rgba(255, 255, 255, 0.9)',
+                        color: colors.labelColor,
                         font: {
                             size: 14,
                             weight: '700'
@@ -268,7 +395,7 @@ if (canvas && labels.length > 0) {
                         padding: 15
                     },
                     angleLines: {
-                        color: 'rgba(255, 255, 255, 0.1)'
+                        color: colors.angleLineColor
                     }
                 }
             },
@@ -278,10 +405,30 @@ if (canvas && labels.length > 0) {
             }
         }
     });
+    
+    // Обновление цветов при смене темы
+    const originalToggleTheme = window.toggleTheme;
+    window.toggleTheme = function() {
+        if (originalToggleTheme) {
+            originalToggleTheme();
+        }
+        
+        // Обновляем цвета диаграммы
+        setTimeout(() => {
+            const newColors = getThemeColors();
+            chart.options.scales.r.ticks.color = newColors.tickColor;
+            chart.options.scales.r.grid.color = newColors.gridColor;
+            chart.options.scales.r.pointLabels.color = newColors.labelColor;
+            chart.options.scales.r.angleLines.color = newColors.angleLineColor;
+            chart.update();
+        }, 50);
+    };
+    }, 100); // Закрываем setTimeout для ожидания установки темы
 } else {
     console.error('Canvas element not found or no skill data available');
 }
 </script>
+<?php endif; ?>
 
 <style>
     .profile-container {
@@ -298,11 +445,12 @@ if (canvas && labels.length > 0) {
     }
     
     .profile-card {
-        background: linear-gradient(135deg, var(--dark-gray), rgba(35, 38, 47, 0.8));
+        background: var(--bg-secondary);
         padding: 2rem;
         border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border-color);
         text-align: center;
+        box-shadow: 0 4px 20px var(--shadow);
     }
     
     .profile-avatar {
@@ -332,11 +480,19 @@ if (canvas && labels.length > 0) {
         font-size: 0.9rem;
     }
     
+    [data-theme="light"] .profile-email {
+        color: rgba(23, 26, 32, 0.6);
+    }
+    
     .user-level {
         background: rgba(255, 255, 255, 0.05);
         padding: 1.2rem;
         border-radius: 15px;
         margin-bottom: 1.5rem;
+    }
+    
+    [data-theme="light"] .user-level {
+        background: rgba(23, 26, 32, 0.05);
     }
     
     .level-header {
@@ -354,6 +510,10 @@ if (canvas && labels.length > 0) {
         font-size: 1.1rem;
         margin-bottom: 1rem;
         color: rgba(255, 255, 255, 0.7);
+    }
+    
+    [data-theme="light"] .points-section h3 {
+        color: rgba(23, 26, 32, 0.7);
     }
     
     .points-value {
@@ -385,6 +545,10 @@ if (canvas && labels.length > 0) {
         border-radius: 15px;
     }
     
+    [data-theme="light"] .skills-container {
+        background: rgba(23, 26, 32, 0.02);
+    }
+    
     #skillsChart {
         max-width: 100%;
         height: auto !important;
@@ -404,6 +568,11 @@ if (canvas && labels.length > 0) {
         padding: 0.8rem;
         background: rgba(255, 255, 255, 0.03);
         border-radius: 10px;
+    }
+    
+    [data-theme="light"] .legend-item {
+        background: rgba(23, 26, 32, 0.05);
+        border: 1px solid rgba(23, 26, 32, 0.08);
     }
     
     .legend-dot {
@@ -442,8 +611,18 @@ if (canvas && labels.length > 0) {
         transition: all 0.3s;
     }
     
+    [data-theme="light"] .course-item {
+        background: rgba(23, 26, 32, 0.02);
+        border: 1px solid rgba(23, 26, 32, 0.08);
+    }
+    
     .course-item:hover {
         background: rgba(255, 255, 255, 0.04);
+        border-color: rgba(255, 107, 53, 0.3);
+    }
+    
+    [data-theme="light"] .course-item:hover {
+        background: rgba(23, 26, 32, 0.04);
         border-color: rgba(255, 107, 53, 0.3);
     }
     
@@ -455,6 +634,10 @@ if (canvas && labels.length > 0) {
     .course-info p {
         color: rgba(255, 255, 255, 0.6);
         font-size: 0.95rem;
+    }
+    
+    [data-theme="light"] .course-info p {
+        color: rgba(23, 26, 32, 0.6);
     }
     
     .course-progress {
@@ -485,6 +668,10 @@ if (canvas && labels.length > 0) {
     .empty-state p {
         color: rgba(255, 255, 255, 0.6);
         margin-bottom: 2rem;
+    }
+    
+    [data-theme="light"] .empty-state p {
+        color: rgba(23, 26, 32, 0.6);
     }
     
     /* === АДАПТИВНОСТЬ === */

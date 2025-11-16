@@ -86,7 +86,7 @@ include 'templates/header.php';
     
     .profile-stats {
         padding: 2rem;
-        background: white;
+        background: var(--bg-secondary);
         border-radius: 0 0 16px 16px;
     }
     
@@ -94,7 +94,7 @@ include 'templates/header.php';
         display: flex;
         justify-content: space-between;
         padding: 1rem 0;
-        border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+        border-bottom: 1px solid var(--border-color);
     }
     
     .stat-row:last-child {
@@ -115,7 +115,7 @@ include 'templates/header.php';
     .level-indicator {
         margin-top: 1.5rem;
         padding-top: 1.5rem;
-        border-top: 1px solid rgba(0, 0, 0, 0.08);
+        border-top: 1px solid var(--border-color);
     }
     
     .level-text {
@@ -131,10 +131,11 @@ include 'templates/header.php';
     }
     
     .skills-radar {
-        background: white;
+        background: var(--bg-secondary);
         border-radius: 16px;
         padding: 2.5rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 20px var(--shadow);
+        border: 1px solid var(--border-color);
     }
     
     .radar-title {
@@ -149,17 +150,19 @@ include 'templates/header.php';
     }
     
     .course-progress-item {
-        background: white;
+        background: var(--bg-secondary);
         border-radius: 12px;
         padding: 1.5rem;
         margin-bottom: 1rem;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        box-shadow: 0 4px 20px var(--shadow);
+        border: 1px solid var(--border-color);
         transition: all 0.3s;
     }
     
     .course-progress-item:hover {
         transform: translateX(8px);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        box-shadow: 0 8px 30px var(--shadow-hover);
+        border-color: var(--primary-orange);
     }
     
     .course-progress-header {
@@ -319,11 +322,20 @@ const skillData = allSkills.map((skill, index) => ({
     value: skillValues[index] || Math.floor(Math.random() * 5) + 1
 }));
 
+// Ждем установки темы перед отрисовкой
+setTimeout(() => {
 function drawRadarChart() {
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
     const maxRadius = Math.min(centerX, centerY) - 100;
     const angleStep = (Math.PI * 2) / skillData.length;
+    
+    // Определяем текущую тему
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const gridColor = isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(23, 26, 32, 0.05)';
+    const lineColor = isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(23, 26, 32, 0.1)';
+    const textColor = isDark ? '#ffffff' : '#171a20';
+    const centerColor = isDark ? '#ffffff' : '#171a20';
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     
@@ -331,7 +343,7 @@ function drawRadarChart() {
     for (let i = 1; i <= 5; i++) {
         ctx.beginPath();
         ctx.arc(centerX, centerY, (maxRadius / 5) * i, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.05)';
+        ctx.strokeStyle = gridColor;
         ctx.lineWidth = 1;
         ctx.stroke();
     }
@@ -345,7 +357,7 @@ function drawRadarChart() {
         ctx.beginPath();
         ctx.moveTo(centerX, centerY);
         ctx.lineTo(endX, endY);
-        ctx.strokeStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.strokeStyle = lineColor;
         ctx.lineWidth = 1;
         ctx.stroke();
         
@@ -364,7 +376,7 @@ function drawRadarChart() {
         const textX = centerX + Math.cos(angle) * (maxRadius + 40);
         const textY = centerY + Math.sin(angle) * (maxRadius + 40);
         
-        ctx.fillStyle = '#171a20';
+        ctx.fillStyle = textColor;
         ctx.font = '12px -apple-system, BlinkMacSystemFont, sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
@@ -396,7 +408,7 @@ function drawRadarChart() {
     // Центральная точка
     ctx.beginPath();
     ctx.arc(centerX, centerY, 8, 0, Math.PI * 2);
-    ctx.fillStyle = '#171a20';
+    ctx.fillStyle = centerColor;
     ctx.fill();
 }
 
@@ -411,6 +423,18 @@ function animate() {
 }
 
 animate();
+
+// Перерисовка при переключении темы
+const originalToggleTheme = window.toggleTheme;
+window.toggleTheme = function() {
+    if (originalToggleTheme) {
+        originalToggleTheme();
+    }
+    setTimeout(() => {
+        drawRadarChart();
+    }, 50);
+};
+}, 100); // Закрываем setTimeout для ожидания установки темы
 </script>
 
 <?php include 'templates/footer.php'; ?>

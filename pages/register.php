@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $phone = trim($_POST['phone'] ?? '');
     $password = $_POST['password'] ?? '';
     $password_confirm = $_POST['password_confirm'] ?? '';
-    $role = $_POST['role'] ?? 'student';
+    $role = 'student'; // Все регистрируются как школьники
     
     if (empty($name)) {
         $errors[] = 'Введите ваше имя';
@@ -50,11 +50,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
         
         $stmt = $conn->prepare("
-            INSERT INTO users (email, password, name, phone, role) 
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO users (email, password, name, phone, role, verified) 
+            VALUES (?, ?, ?, ?, 'student', 1)
         ");
         
-        if ($stmt->execute([$email, $passwordHash, $name, $phone, $role])) {
+        if ($stmt->execute([$email, $passwordHash, $name, $phone])) {
             $_SESSION['user_id'] = $conn->lastInsertId();
             setFlash('success', 'Регистрация прошла успешно!');
             redirect('/cabinet');
@@ -119,14 +119,6 @@ include 'templates/header.php';
                     value="<?= e($phone) ?>"
                     placeholder="+7 (999) 123-45-67"
                 >
-            </div>
-            
-            <div class="form-group">
-                <label for="role">Я хочу</label>
-                <select id="role" name="role" class="form-control">
-                    <option value="student" <?= $role === 'student' ? 'selected' : '' ?>>Учиться (Студент)</option>
-                    <option value="instructor" <?= $role === 'instructor' ? 'selected' : '' ?>>Преподавать (Преподаватель)</option>
-                </select>
             </div>
             
             <div class="form-group">
