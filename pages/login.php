@@ -91,10 +91,12 @@ include 'templates/header.php';
         </p>
         
         <div style="margin-top: 2rem; padding: 1.5rem; background: rgba(0, 0, 0, 0.02); border-radius: 8px;">
-            <p style="font-weight: bold; margin-bottom: 1rem; color: var(--dark-gray);">Тестовые аккаунты:</p>
-            <div style="font-size: 0.9rem; line-height: 1.8; color: var(--medium-gray);">
-                <p><strong>Админ:</strong> admin@foxyd.ru / admin123</p>
-                <p><strong>Преподаватель:</strong> instructor@foxyd.ru / instructor123</p>
+            <p style="font-weight: bold; margin-bottom: 1rem; color: var(--dark-gray);">Тестовые аккаунты (пароль: 123456):</p>
+            <div style="font-size: 0.85rem; line-height: 1.6; color: var(--medium-gray);">
+                <p style="margin-bottom: 0.5rem;"><strong>Админ:</strong> admin@foxyd.ru</p>
+                <p style="margin-bottom: 0.5rem;"><strong>Инструкторы:</strong> smirnova@foxyd.ru, volkov@foxyd.ru, morozova@foxyd.ru, lebedev@foxyd.ru</p>
+                <p style="margin-bottom: 0.5rem;"><strong>Репетиторы:</strong> ivanov@foxyd.ru, petrova@foxyd.ru, sidorov@foxyd.ru, kozlova@foxyd.ru, novikov@foxyd.ru</p>
+                <p><strong>Студенты:</strong> student1@foxyd.ru, student2@foxyd.ru, student3@foxyd.ru</p>
             </div>
         </div>
     </div>

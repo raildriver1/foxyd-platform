@@ -404,6 +404,34 @@ include __DIR__ . '/../templates/header.php';
         padding: 1rem 0;
     }
     
+    /* Стили для select в тёмной теме */
+    .form-control {
+        background-color: var(--input-bg) !important;
+        color: var(--text-primary) !important;
+        border: 1px solid var(--border-color) !important;
+    }
+    
+    select.form-control {
+        background-color: var(--input-bg) !important;
+        color: var(--text-primary) !important;
+    }
+    
+    select.form-control option {
+        background-color: var(--bg-secondary);
+        color: var(--text-primary);
+    }
+    
+    [data-theme="light"] .form-control,
+    [data-theme="light"] select.form-control {
+        background-color: #ffffff !important;
+        color: #171a20 !important;
+    }
+    
+    [data-theme="light"] select.form-control option {
+        background-color: #ffffff;
+        color: #171a20;
+    }
+    
     .form-grid {
         display: grid;
         grid-template-columns: repeat(2, 1fr);

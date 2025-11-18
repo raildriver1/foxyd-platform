@@ -185,7 +185,7 @@ class Database {
         $stmt->execute();
         
         if ($stmt->fetchColumn() == 0) {
-            $password = password_hash('admin123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, role) 
                 VALUES ('admin@foxyd.ru', ?, 'Администратор', 'admin')
@@ -199,7 +199,7 @@ class Database {
         
         if ($stmt->fetchColumn() == 0) {
             // Репетитор 1
-            $password = password_hash('tutor123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, phone, role) 
                 VALUES ('ivanov@foxyd.ru', ?, 'Иванов Иван Иванович', '+7 (999) 123-45-67', 'tutor')
@@ -214,7 +214,7 @@ class Database {
             $stmt->execute([$userId]);
             
             // Репетитор 2
-            $password = password_hash('tutor123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, phone, role) 
                 VALUES ('petrova@foxyd.ru', ?, 'Петрова Мария Сергеевна', '+7 (999) 234-56-78', 'tutor')
@@ -229,7 +229,7 @@ class Database {
             $stmt->execute([$userId]);
             
             // Репетитор 3
-            $password = password_hash('tutor123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, phone, role) 
                 VALUES ('sidorov@foxyd.ru', ?, 'Сидоров Петр Александрович', '+7 (999) 345-67-89', 'tutor')
@@ -244,7 +244,7 @@ class Database {
             $stmt->execute([$userId]);
             
             // Репетитор 4
-            $password = password_hash('tutor123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, phone, role) 
                 VALUES ('kozlova@foxyd.ru', ?, 'Козлова Анна Викторовна', '+7 (999) 456-78-90', 'tutor')
@@ -259,7 +259,7 @@ class Database {
             $stmt->execute([$userId]);
             
             // Репетитор 5
-            $password = password_hash('tutor123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, phone, role) 
                 VALUES ('novikov@foxyd.ru', ?, 'Новиков Дмитрий Олегович', '+7 (999) 567-89-01', 'tutor')
@@ -274,13 +274,41 @@ class Database {
             $stmt->execute([$userId]);
         }
         
+        // Создаем тестовых студентов
+        $stmt = $this->connection->prepare("SELECT COUNT(*) FROM users WHERE role = 'student'");
+        $stmt->execute();
+        
+        if ($stmt->fetchColumn() == 0) {
+            // Студент 1
+            $password = password_hash('123456', PASSWORD_DEFAULT);
+            $stmt = $this->connection->prepare("
+                INSERT INTO users (email, password, name, phone, role) 
+                VALUES ('student1@foxyd.ru', ?, 'Кузнецов Алексей Дмитриевич', '+7 (999) 601-11-11', 'student')
+            ");
+            $stmt->execute([$password]);
+            
+            // Студент 2
+            $stmt = $this->connection->prepare("
+                INSERT INTO users (email, password, name, phone, role) 
+                VALUES ('student2@foxyd.ru', ?, 'Соколова Дарья Андреевна', '+7 (999) 602-22-22', 'student')
+            ");
+            $stmt->execute([$password]);
+            
+            // Студент 3
+            $stmt = $this->connection->prepare("
+                INSERT INTO users (email, password, name, phone, role) 
+                VALUES ('student3@foxyd.ru', ?, 'Попов Михаил Викторович', '+7 (999) 603-33-33', 'student')
+            ");
+            $stmt->execute([$password]);
+        }
+        
         // Создаем инструкторов и курсы
         $stmt = $this->connection->prepare("SELECT COUNT(*) FROM courses");
         $stmt->execute();
         
         if ($stmt->fetchColumn() == 0) {
             // Инструктор 1 - Смирнова Елена
-            $password = password_hash('instructor123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, phone, role) 
                 VALUES ('smirnova@foxyd.ru', ?, 'Смирнова Елена Александровна', '+7 (999) 111-22-33', 'instructor')
@@ -289,7 +317,7 @@ class Database {
             $instructor1 = $this->connection->lastInsertId();
             
             // Инструктор 2 - Волков Сергей
-            $password = password_hash('instructor123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, phone, role) 
                 VALUES ('volkov@foxyd.ru', ?, 'Волков Сергей Николаевич', '+7 (999) 222-33-44', 'instructor')
@@ -298,7 +326,7 @@ class Database {
             $instructor2 = $this->connection->lastInsertId();
             
             // Инструктор 3 - Морозова Ольга
-            $password = password_hash('instructor123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, phone, role) 
                 VALUES ('morozova@foxyd.ru', ?, 'Морозова Ольга Ивановна', '+7 (999) 333-44-55', 'instructor')
@@ -307,7 +335,7 @@ class Database {
             $instructor3 = $this->connection->lastInsertId();
             
             // Инструктор 4 - Лебедев Андрей
-            $password = password_hash('instructor123', PASSWORD_DEFAULT);
+            $password = password_hash('123456', PASSWORD_DEFAULT);
             $stmt = $this->connection->prepare("
                 INSERT INTO users (email, password, name, phone, role) 
                 VALUES ('lebedev@foxyd.ru', ?, 'Лебедев Андрей Павлович', '+7 (999) 444-55-66', 'instructor')
