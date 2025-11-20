@@ -31,7 +31,7 @@
                         <ul>
                             <li><a href="https://t.me/egorkin_21" target="_blank">Telegram</a></li>
                             <li><a href="mailto:support@foxyd.ru">Email</a></li>
-                            <li><a href="#">FAQ</a></li>
+
                         </ul>
                     </div>
                     
@@ -40,7 +40,6 @@
                         <ul>
                             <li><a href="#">О нас</a></li>
                             <li><a href="#">Инструкторы</a></li>
-                            <li><a href="#">Блог</a></li>
                         </ul>
                     </div>
                 </div>
